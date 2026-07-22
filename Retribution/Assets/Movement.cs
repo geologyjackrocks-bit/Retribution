@@ -9,22 +9,30 @@ public class Movement : MonoBehaviour
 {
     public float speed = 5f;
     public Rigidbody2D rb;
+    public SpriteRenderer sr;
     public Collider2D playerCollider;
     public Collider2D groundCollider;
     string facingDirection = "nothing"; //for checking the direction of the character when needing to dash or animate sprites
+    public Sprite[] walkingAnimation;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         rb.freezeRotation = true;
+        sr = GetComponent<SpriteRenderer>();
     }
     void FixedUpdate()
     {
-        
+        int animationFrame = 0;
         float moveX = 0f;
         float moveY = 0f;
         bool playerOnGround = (playerCollider.IsTouching(groundCollider));
-
+        if (rb.linearVelocityX > 0)
+        {
+            sr.sprite = walkingAnimation[animationFrame];
+            animationFrame++;
+            
+        }
         if (playerOnGround)
         {
             if (Keyboard.current.wKey.isPressed)

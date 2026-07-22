@@ -179,3 +179,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3616b0b5d1b70fb4f9ca2de73e1edec6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  roomPrefab: {fileID: 2440260583171324959}
+  roomSprites:
+  - {fileID: 0}
+  roomCount: 5
+  roomSpacing: 10
