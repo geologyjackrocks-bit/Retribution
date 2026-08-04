@@ -1,9 +1,11 @@
 using JetBrains.Annotations;
 using System;
+using System.Collections;
 using System.Runtime.CompilerServices;
 using Unity.Hierarchy;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class Movement : MonoBehaviour
 {
@@ -14,6 +16,7 @@ public class Movement : MonoBehaviour
     public Collider2D groundCollider;
     string facingDirection = "nothing"; //for checking the direction of the character when needing to dash or animate sprites
     public Sprite[] walkingAnimation;
+    private bool isAnimating = false;
 
     private void Start()
     {
@@ -21,18 +24,32 @@ public class Movement : MonoBehaviour
         rb.freezeRotation = true;
         sr = GetComponent<SpriteRenderer>();
     }
-    void FixedUpdate()
+    IEnumerator PlayerAnimation()
     {
+        isAnimating = true;
         int animationFrame = 0;
-        float moveX = 0f;
-        float moveY = 0f;
-        bool playerOnGround = (playerCollider.IsTouching(groundCollider));
-        if (rb.linearVelocityX > 0)
+       while (rb.linearVelocityX > 0)
         {
             sr.sprite = walkingAnimation[animationFrame];
             animationFrame++;
-            
+            Debug.Log(animationFrame);
+            if (animationFrame > 4) animationFrame = 0;
+            {
+                Debug.Log("moving");
+                
+                
+            }
+            yield return new WaitForSeconds(0.1f);
         }
+      isAnimating = false;
+    }
+    void FixedUpdate()
+    {
+        
+        float moveX = 0f;
+        float moveY = 0f;
+        bool playerOnGround = (playerCollider.IsTouching(groundCollider));
+        
         if (playerOnGround)
         {
             if (Keyboard.current.wKey.isPressed)
@@ -54,6 +71,10 @@ public class Movement : MonoBehaviour
         }
         rb.AddForceX(moveX * speed);
         Debug.Log(facingDirection);
+        if (moveX != 0f && !isAnimating)
+        {
+            StartCoroutine(PlayerAnimation());
+        }
         if (!playerOnGround)
         {
             if (Keyboard.current.iKey.wasPressedThisFrame)
