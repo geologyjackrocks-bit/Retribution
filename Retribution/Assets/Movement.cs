@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
 using Unity.Hierarchy;
+using UnityEditor.Tilemaps;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
@@ -15,8 +16,10 @@ public class Movement : MonoBehaviour
     public Collider2D playerCollider;
     public Collider2D groundCollider;
     string facingDirection = "nothing"; //for checking the direction of the character when needing to dash or animate sprites
-    public Sprite[] walkingAnimation;
+    public Sprite[] rightWalkingAnimation;
+    public Sprite[] leftWalkingAnimation;
     private bool isAnimating = false;
+    private bool isDashing = false;
 
     private void Start()
     {
@@ -27,22 +30,50 @@ public class Movement : MonoBehaviour
     IEnumerator PlayerAnimation()
     {
         isAnimating = true;
-        int animationFrame = 0;
+        int walkingAnimationFrame = 0;
        while (rb.linearVelocityX > 0)
         {
-            sr.sprite = walkingAnimation[animationFrame];
-            animationFrame++;
-            Debug.Log(animationFrame);
-            if (animationFrame > 4) animationFrame = 0;
-            {
-                Debug.Log("moving");
-                
-                
-            }
+            sr.sprite = rightWalkingAnimation[walkingAnimationFrame];
+            walkingAnimationFrame++;
+            if (walkingAnimationFrame > 4) walkingAnimationFrame = 0;
             yield return new WaitForSeconds(0.1f);
         }
-      isAnimating = false;
+        while (rb.linearVelocityX < 0)
+        {
+            sr.sprite = rightWalkingAnimation[walkingAnimationFrame];
+            walkingAnimationFrame++;
+            if (walkingAnimationFrame > 4) walkingAnimationFrame = 0;
+            yield return new WaitForSeconds(0.1f);
+        }
+        isAnimating = false;
+
     }
+    IEnumerator dashing()
+    {
+        isDashing = true;
+        int dashTimer = 20;
+        if (facingDirection == "right")
+        {
+            while (dashTimer != 0)
+            {
+                rb.linearVelocityX = 50;
+                rb.linearVelocityY = 0;
+                dashTimer--;
+            }
+        }
+
+        if (facingDirection == "left")
+        {
+            while (dashTimer != 0)
+            {
+                rb.linearVelocityX = -50;
+                rb.linearVelocityY = 0;
+                yield return new WaitForSeconds(0.02f);
+                dashTimer--;
+            }
+        }
+        isDashing = false;
+    }       
     void FixedUpdate()
     {
         
@@ -69,7 +100,9 @@ public class Movement : MonoBehaviour
             moveX += 1f;
             facingDirection = "right";
         }
-        rb.AddForceX(moveX * speed);
+        if (rb.linearVelocityX < 12 && rb.linearVelocityX > -12) rb.AddForceX(moveX * speed);
+        if (playerOnGround && rb.linearVelocityX > 12) rb.linearVelocityX = 12;
+        if (playerOnGround && rb.linearVelocityX < -12) rb.linearVelocityX = -12;
         Debug.Log(facingDirection);
         if (moveX != 0f && !isAnimating)
         {
@@ -77,21 +110,15 @@ public class Movement : MonoBehaviour
         }
         if (!playerOnGround)
         {
-            if (Keyboard.current.iKey.wasPressedThisFrame)
+            if (Keyboard.current.iKey.isPressed && !isDashing)
             {
-                if (facingDirection == "left")
-                {
-                    rb.AddForceX(-500f);
-                    Debug.Log("dash left");
-                }
-                if (facingDirection == "right") 
-                {
-                    rb.AddForceX(500f);
-                    Debug.Log("dash right");
-                }
+                
+                StartCoroutine(dashing());
+                
             }
         }
-
+        Debug.Log(playerOnGround);
+        Debug.Log("is dashing" + isDashing);
     }
 }
 
