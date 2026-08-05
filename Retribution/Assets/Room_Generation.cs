@@ -30,6 +30,6 @@ public class Room_Generation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        while (true) { }
     }
 }

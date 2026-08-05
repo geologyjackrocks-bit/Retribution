@@ -389,6 +389,12 @@ MonoBehaviour:
   - {fileID: -3822638996149236887, guid: f1a490c99b7f74c46adeab615205ed5a, type: 3}
   - {fileID: 5848002046838447818, guid: f1a490c99b7f74c46adeab615205ed5a, type: 3}
   - {fileID: 8881633186994718306, guid: f1a490c99b7f74c46adeab615205ed5a, type: 3}
+  rightDashAnimation:
+  - {fileID: 8446422127391410335, guid: f1a490c99b7f74c46adeab615205ed5a, type: 3}
+  - {fileID: 8262519203881350225, guid: f1a490c99b7f74c46adeab615205ed5a, type: 3}
+  leftDashAnimation:
+  - {fileID: -7445799417147874306, guid: f1a490c99b7f74c46adeab615205ed5a, type: 3}
+  - {fileID: -6686150014665856525, guid: f1a490c99b7f74c46adeab615205ed5a, type: 3}
 --- !u!50 &826467503
 Rigidbody2D:
   serializedVersion: 5

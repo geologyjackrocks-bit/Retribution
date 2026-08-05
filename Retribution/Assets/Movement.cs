@@ -18,37 +18,72 @@ public class Movement : MonoBehaviour
     string facingDirection = "nothing"; //for checking the direction of the character when needing to dash or animate sprites
     public Sprite[] rightWalkingAnimation;
     public Sprite[] leftWalkingAnimation;
+    public Sprite[] rightDashAnimation;
+    public Sprite[] leftDashAnimation;
     private bool isAnimating = false;
     private bool isDashing = false;
+    private bool playerOnGround;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         rb.freezeRotation = true;
-        sr = GetComponent<SpriteRenderer>();
-    }
+        sr = GetComponent<SpriteRenderer>();    }
     IEnumerator PlayerAnimation()
     {
         isAnimating = true;
         int walkingAnimationFrame = 0;
-       while (rb.linearVelocityX > 0)
+        int dashingAnimationFrame = 0;
+        while (rb.linearVelocityX > 0)
         {
             sr.sprite = rightWalkingAnimation[walkingAnimationFrame];
             walkingAnimationFrame++;
             if (walkingAnimationFrame > 4) walkingAnimationFrame = 0;
             yield return new WaitForSeconds(0.1f);
         }
+
         while (rb.linearVelocityX < 0)
         {
-            sr.sprite = rightWalkingAnimation[walkingAnimationFrame];
+            sr.sprite = leftWalkingAnimation[walkingAnimationFrame];
             walkingAnimationFrame++;
             if (walkingAnimationFrame > 4) walkingAnimationFrame = 0;
             yield return new WaitForSeconds(0.1f);
         }
-        isAnimating = false;
 
+        if (rb.linearVelocityX > -0.5 || rb.linearVelocityX < 0.5 || playerOnGround)
+        {
+            if (facingDirection == "right")
+            {
+                sr.sprite = rightWalkingAnimation[walkingAnimationFrame];
+            }
+            if (facingDirection == "left")
+            {
+                sr.sprite = leftWalkingAnimation[walkingAnimationFrame];
+            }
+        }
+
+
+        while (rb.linearVelocityX > 13)
+        {
+            sr.sprite = rightDashAnimation[dashingAnimationFrame];
+            dashingAnimationFrame++;
+            if (dashingAnimationFrame > 1) dashingAnimationFrame = 0;
+            Debug.Log("somethignidk");
+            yield return new WaitForSeconds(0.1f);
+        }
+        
+        while (rb.linearVelocityX < -13)
+        {
+            sr.sprite = leftDashAnimation[dashingAnimationFrame];
+            dashingAnimationFrame++;
+            if (dashingAnimationFrame > 1) dashingAnimationFrame = 0;
+            Debug.Log("somethignidk");
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        isAnimating = false;
     }
-    IEnumerator dashing()
+    IEnumerator Dashing()
     {
         isDashing = true;
         int dashTimer = 20;
@@ -57,7 +92,7 @@ public class Movement : MonoBehaviour
             while (dashTimer != 0)
             {
                 rb.linearVelocityX = 50;
-                rb.linearVelocityY = 0;
+                rb.linearVelocityY = 0.3923998f;
                 dashTimer--;
             }
         }
@@ -67,29 +102,24 @@ public class Movement : MonoBehaviour
             while (dashTimer != 0)
             {
                 rb.linearVelocityX = -50;
-                rb.linearVelocityY = 0;
-                yield return new WaitForSeconds(0.02f);
+                rb.linearVelocityY = 0.4f;
                 dashTimer--;
             }
         }
         isDashing = false;
+        yield break;
     }       
     void FixedUpdate()
     {
-        
+        playerOnGround = (playerCollider.IsTouching(groundCollider));
         float moveX = 0f;
-        float moveY = 0f;
-        bool playerOnGround = (playerCollider.IsTouching(groundCollider));
+       
         
         if (playerOnGround)
         {
-            if (Keyboard.current.wKey.isPressed)
-            {
-                rb.linearVelocityY += 5f;
-            }
+            if (Keyboard.current.wKey.isPressed) rb.linearVelocityY += 5f;
         }
 
-        if (Keyboard.current.sKey.isPressed) moveY -= 1f;
         if (Keyboard.current.aKey.isPressed)
         {
             moveX -= 1f;
@@ -113,7 +143,7 @@ public class Movement : MonoBehaviour
             if (Keyboard.current.iKey.isPressed && !isDashing)
             {
                 
-                StartCoroutine(dashing());
+                StartCoroutine(Dashing());
                 
             }
         }
