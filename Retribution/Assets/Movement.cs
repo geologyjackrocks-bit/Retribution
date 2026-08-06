@@ -23,6 +23,7 @@ public class Movement : MonoBehaviour
     private bool isAnimating = false;
     private bool isDashing = false;
     private bool playerOnGround;
+    private int walkingAnimationFrame;
 
     private void Start()
     {
@@ -31,57 +32,42 @@ public class Movement : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();    }
     IEnumerator PlayerAnimation()
     {
-        isAnimating = true;
-        int walkingAnimationFrame = 0;
+        isAnimating = true; // lets the rest of the script know that it is animating and not to start the coroutine again
+        walkingAnimationFrame = 0;
         int dashingAnimationFrame = 0;
-        while (rb.linearVelocityX > 0)
+        while (rb.linearVelocityX > 0 && rb.linearVelocityX <= 13) // looking for right walk
         {
             sr.sprite = rightWalkingAnimation[walkingAnimationFrame];
             walkingAnimationFrame++;
             if (walkingAnimationFrame > 4) walkingAnimationFrame = 0;
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.11f);
         }
 
-        while (rb.linearVelocityX < 0)
+        while (rb.linearVelocityX < 0 && rb.linearVelocityX >= -13) // looking for left walk
         {
             sr.sprite = leftWalkingAnimation[walkingAnimationFrame];
             walkingAnimationFrame++;
             if (walkingAnimationFrame > 4) walkingAnimationFrame = 0;
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.11f);
         }
 
-        if (rb.linearVelocityX > -0.5 || rb.linearVelocityX < 0.5 || playerOnGround)
-        {
-            if (facingDirection == "right")
-            {
-                sr.sprite = rightWalkingAnimation[walkingAnimationFrame];
-            }
-            if (facingDirection == "left")
-            {
-                sr.sprite = leftWalkingAnimation[walkingAnimationFrame];
-            }
-        }
-
-
-        while (rb.linearVelocityX > 13)
+        while (rb.linearVelocityX > 13) // looking for right dash
         {
             sr.sprite = rightDashAnimation[dashingAnimationFrame];
             dashingAnimationFrame++;
             if (dashingAnimationFrame > 1) dashingAnimationFrame = 0;
-            Debug.Log("somethignidk");
             yield return new WaitForSeconds(0.1f);
         }
         
-        while (rb.linearVelocityX < -13)
+        while (rb.linearVelocityX < -13) // looking for left dash
         {
             sr.sprite = leftDashAnimation[dashingAnimationFrame];
             dashingAnimationFrame++;
             if (dashingAnimationFrame > 1) dashingAnimationFrame = 0;
-            Debug.Log("somethignidk");
             yield return new WaitForSeconds(0.1f);
         }
 
-        isAnimating = false;
+        isAnimating = false; // lets the rest of the script know that it is no longer animating and can start the coroutine again
     }
     IEnumerator Dashing()
     {
@@ -92,7 +78,7 @@ public class Movement : MonoBehaviour
             while (dashTimer != 0)
             {
                 rb.linearVelocityX = 50;
-                rb.linearVelocityY = 0.3923998f;
+                rb.linearVelocityY = 0.3923998f; // this number is required to be exactly that to keep the linearVelocityY exactly 0, it wont say 0 idk why it does that but it is actually 0
                 dashTimer--;
             }
         }
@@ -102,7 +88,7 @@ public class Movement : MonoBehaviour
             while (dashTimer != 0)
             {
                 rb.linearVelocityX = -50;
-                rb.linearVelocityY = 0.4f;
+                rb.linearVelocityY = 0.3923998f; // note on line 83 applies here as well
                 dashTimer--;
             }
         }
@@ -112,9 +98,24 @@ public class Movement : MonoBehaviour
     void FixedUpdate()
     {
         playerOnGround = (playerCollider.IsTouching(groundCollider));
-        float moveX = 0f;
-       
-        
+        float moveX = 0f; // i dont think this is actually nessicarry for the movement left to right but it doesnt work quite right if i do it differently so idk
+
+        if ((rb.linearVelocityX > -0.5 && rb.linearVelocityX < 0.5) || playerOnGround)
+        {
+            if (facingDirection == "right")
+            {
+                sr.sprite = rightWalkingAnimation[walkingAnimationFrame];
+                StopCoroutine(Dashing());
+                StopCoroutine(PlayerAnimation());
+            }
+            if (facingDirection == "left")
+            {
+                sr.sprite = leftWalkingAnimation[walkingAnimationFrame];
+                StopCoroutine(Dashing());
+                StopCoroutine(PlayerAnimation());
+            }
+        }
+
         if (playerOnGround)
         {
             if (Keyboard.current.wKey.isPressed) rb.linearVelocityY += 5f;
@@ -133,7 +134,7 @@ public class Movement : MonoBehaviour
         if (rb.linearVelocityX < 12 && rb.linearVelocityX > -12) rb.AddForceX(moveX * speed);
         if (playerOnGround && rb.linearVelocityX > 12) rb.linearVelocityX = 12;
         if (playerOnGround && rb.linearVelocityX < -12) rb.linearVelocityX = -12;
-        Debug.Log(facingDirection);
+        Debug.Log("facingDirection="+facingDirection);
         if (moveX != 0f && !isAnimating)
         {
             StartCoroutine(PlayerAnimation());
@@ -147,8 +148,8 @@ public class Movement : MonoBehaviour
                 
             }
         }
-        Debug.Log(playerOnGround);
-        Debug.Log("is dashing" + isDashing);
+        Debug.Log("playerOnGround="+playerOnGround);
+        Debug.Log("isDashing=" + isDashing);
     }
 }
 
