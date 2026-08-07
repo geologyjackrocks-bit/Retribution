@@ -378,23 +378,23 @@ MonoBehaviour:
   playerCollider: {fileID: 826467506}
   groundCollider: {fileID: 1956380155}
   rightWalkingAnimation:
-  - {fileID: -6351655803138528731, guid: f1a490c99b7f74c46adeab615205ed5a, type: 3}
-  - {fileID: -3588300309756306896, guid: f1a490c99b7f74c46adeab615205ed5a, type: 3}
-  - {fileID: -2888039877197801611, guid: f1a490c99b7f74c46adeab615205ed5a, type: 3}
-  - {fileID: -8422907437065293742, guid: f1a490c99b7f74c46adeab615205ed5a, type: 3}
-  - {fileID: 7003723703523198640, guid: f1a490c99b7f74c46adeab615205ed5a, type: 3}
+  - {fileID: 2699721380527466488, guid: 3be164cbf2af3c54fb274524ecc83e69, type: 3}
+  - {fileID: -6317328553093526140, guid: 3be164cbf2af3c54fb274524ecc83e69, type: 3}
+  - {fileID: -4293931877964787223, guid: 3be164cbf2af3c54fb274524ecc83e69, type: 3}
+  - {fileID: -7534931932984655772, guid: 3be164cbf2af3c54fb274524ecc83e69, type: 3}
+  - {fileID: 9135284674282138978, guid: 3be164cbf2af3c54fb274524ecc83e69, type: 3}
   leftWalkingAnimation:
-  - {fileID: 8625859731150418023, guid: f1a490c99b7f74c46adeab615205ed5a, type: 3}
-  - {fileID: -7726706627625594336, guid: f1a490c99b7f74c46adeab615205ed5a, type: 3}
-  - {fileID: -3822638996149236887, guid: f1a490c99b7f74c46adeab615205ed5a, type: 3}
-  - {fileID: 5848002046838447818, guid: f1a490c99b7f74c46adeab615205ed5a, type: 3}
-  - {fileID: 8881633186994718306, guid: f1a490c99b7f74c46adeab615205ed5a, type: 3}
+  - {fileID: 1074096326220525701, guid: 3be164cbf2af3c54fb274524ecc83e69, type: 3}
+  - {fileID: 8689843405515316638, guid: 3be164cbf2af3c54fb274524ecc83e69, type: 3}
+  - {fileID: 5641504614659863955, guid: 3be164cbf2af3c54fb274524ecc83e69, type: 3}
+  - {fileID: -7002273768148643571, guid: 3be164cbf2af3c54fb274524ecc83e69, type: 3}
+  - {fileID: -4245273080967471949, guid: 3be164cbf2af3c54fb274524ecc83e69, type: 3}
   rightDashAnimation:
-  - {fileID: 8446422127391410335, guid: f1a490c99b7f74c46adeab615205ed5a, type: 3}
-  - {fileID: 8262519203881350225, guid: f1a490c99b7f74c46adeab615205ed5a, type: 3}
+  - {fileID: 800262850943670068, guid: 3be164cbf2af3c54fb274524ecc83e69, type: 3}
+  - {fileID: 6274502120886714153, guid: 3be164cbf2af3c54fb274524ecc83e69, type: 3}
   leftDashAnimation:
-  - {fileID: -7445799417147874306, guid: f1a490c99b7f74c46adeab615205ed5a, type: 3}
-  - {fileID: -6686150014665856525, guid: f1a490c99b7f74c46adeab615205ed5a, type: 3}
+  - {fileID: -4681156802203100177, guid: 3be164cbf2af3c54fb274524ecc83e69, type: 3}
+  - {fileID: 509281494649885565, guid: 3be164cbf2af3c54fb274524ecc83e69, type: 3}
 --- !u!50 &826467503
 Rigidbody2D:
   serializedVersion: 5
@@ -471,7 +471,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -6351655803138528731, guid: f1a490c99b7f74c46adeab615205ed5a, type: 3}
+  m_Sprite: {fileID: 2699721380527466488, guid: 3be164cbf2af3c54fb274524ecc83e69, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

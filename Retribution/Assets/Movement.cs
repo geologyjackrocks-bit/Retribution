@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using NUnit.Framework.Constraints;
 using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
@@ -35,7 +36,7 @@ public class Movement : MonoBehaviour
         isAnimating = true; // lets the rest of the script know that it is animating and not to start the coroutine again
         walkingAnimationFrame = 0;
         int dashingAnimationFrame = 0;
-        while (rb.linearVelocityX > 0 && rb.linearVelocityX <= 13) // looking for right walk
+        while (rb.linearVelocityX != 0 && rb.linearVelocityX <= 13 && facingDirection == "right") // looking for right walk
         {
             sr.sprite = rightWalkingAnimation[walkingAnimationFrame];
             walkingAnimationFrame++;
@@ -43,7 +44,7 @@ public class Movement : MonoBehaviour
             yield return new WaitForSeconds(0.11f);
         }
 
-        while (rb.linearVelocityX < 0 && rb.linearVelocityX >= -13) // looking for left walk
+        while (rb.linearVelocityX != 0 && rb.linearVelocityX >= -13 && facingDirection == "left") // looking for left walk
         {
             sr.sprite = leftWalkingAnimation[walkingAnimationFrame];
             walkingAnimationFrame++;
