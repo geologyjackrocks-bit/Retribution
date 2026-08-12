@@ -16,7 +16,7 @@ public class Movement : MonoBehaviour
     public SpriteRenderer sr;
     public Collider2D playerCollider;
     public Collider2D groundCollider;
-    string facingDirection = "nothing"; //for checking the direction of the character when needing to dash or animate sprites
+    string facingDirection; //for checking the direction of the character when needing to dash or animate sprites
     public Sprite[] rightWalkingAnimation;
     public Sprite[] leftWalkingAnimation;
     public Sprite[] rightDashAnimation;
@@ -25,12 +25,19 @@ public class Movement : MonoBehaviour
     private bool isDashing = false;
     private bool playerOnGround;
     private int walkingAnimationFrame;
+    public Rigidbody2D rbCamera;
+    public float cameraShakeAmplifier;
+    private float cameraX;
+    private float cameraY;
+    private float playerX;
+    private float playerY;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         rb.freezeRotation = true;
-        sr = GetComponent<SpriteRenderer>();    }
+        sr = GetComponent<SpriteRenderer>();
+    }
     IEnumerator PlayerAnimation()
     {
         isAnimating = true; // lets the rest of the script know that it is animating and not to start the coroutine again
@@ -59,7 +66,7 @@ public class Movement : MonoBehaviour
             if (dashingAnimationFrame > 1) dashingAnimationFrame = 0;
             yield return new WaitForSeconds(0.1f);
         }
-        
+
         while (rb.linearVelocityX < -13) // looking for left dash
         {
             sr.sprite = leftDashAnimation[dashingAnimationFrame];
@@ -95,9 +102,18 @@ public class Movement : MonoBehaviour
         }
         isDashing = false;
         yield break;
-    }       
+    }
     void FixedUpdate()
     {
+        cameraX = rbCamera.position.x;
+        //rbCamera.linearVelocityX = rb.linearVelocityX * cameraShakeAmplifier;
+       // rbCamera.linearVelocityY = rb.linearVelocityY * cameraShakeAmplifier;
+        while (rbCamera.position != rb.position)
+        {
+            cameraX = cameraX + ((cameraX - playerX) / 7);
+            cameraY = cameraY + ((cameraY - playerY) / 7);
+            rbCamera.position = new Vector2(cameraX, cameraY);
+        }
         playerOnGround = (playerCollider.IsTouching(groundCollider));
         float moveX = 0f; // i dont think this is actually nessicarry for the movement left to right but it doesnt work quite right if i do it differently so idk
 
@@ -135,7 +151,7 @@ public class Movement : MonoBehaviour
         if (rb.linearVelocityX < 12 && rb.linearVelocityX > -12) rb.AddForceX(moveX * speed);
         if (playerOnGround && rb.linearVelocityX > 12) rb.linearVelocityX = 12;
         if (playerOnGround && rb.linearVelocityX < -12) rb.linearVelocityX = -12;
-        Debug.Log("facingDirection="+facingDirection);
+        Debug.Log("facingDirection=" + facingDirection);
         if (moveX != 0f && !isAnimating)
         {
             StartCoroutine(PlayerAnimation());
@@ -144,14 +160,13 @@ public class Movement : MonoBehaviour
         {
             if (Keyboard.current.iKey.isPressed && !isDashing)
             {
-                
+
                 StartCoroutine(Dashing());
-                
+
             }
         }
-        Debug.Log("playerOnGround="+playerOnGround);
+        Debug.Log("playerOnGround=" + playerOnGround);
         Debug.Log("isDashing=" + isDashing);
     }
 }
 
- 
