@@ -88,6 +88,7 @@ public class Movement : MonoBehaviour
                 rb.linearVelocityX = 50;
                 rb.linearVelocityY = 0.3923998f; // this number is required to be exactly that to keep the linearVelocityY exactly 0, it wont say 0 idk why it does that but it is actually 0
                 dashTimer--;
+                 
             }
         }
 
@@ -108,12 +109,12 @@ public class Movement : MonoBehaviour
         cameraX = rbCamera.position.x;
         //rbCamera.linearVelocityX = rb.linearVelocityX * cameraShakeAmplifier;
        // rbCamera.linearVelocityY = rb.linearVelocityY * cameraShakeAmplifier;
-        while (rbCamera.position != rb.position)
-        {
-            cameraX = cameraX + ((cameraX - playerX) / 7);
-            cameraY = cameraY + ((cameraY - playerY) / 7);
-            rbCamera.position = new Vector2(cameraX, cameraY);
-        }
+      //  while (rbCamera.position != rb.position)
+      //  {
+     //       cameraX = cameraX + ((cameraX - playerX) / 7);
+     //       cameraY = cameraY + ((cameraY - playerY) / 7);
+     //       rbCamera.position = new Vector2(cameraX, cameraY);
+     //   }
         playerOnGround = (playerCollider.IsTouching(groundCollider));
         float moveX = 0f; // i dont think this is actually nessicarry for the movement left to right but it doesnt work quite right if i do it differently so idk
 
