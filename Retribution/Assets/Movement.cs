@@ -16,7 +16,7 @@ public class Movement : MonoBehaviour
     public SpriteRenderer sr;
     public Collider2D playerCollider;
     public Collider2D groundCollider;
-    string facingDirection; //for checking the direction of the character when needing to dash or animate sprites
+    string facingDirection = "right"; //for checking the direction of the character when needing to dash or animate sprites
     public Sprite[] rightWalkingAnimation;
     public Sprite[] leftWalkingAnimation;
     public Sprite[] rightDashAnimation;
@@ -106,15 +106,17 @@ public class Movement : MonoBehaviour
     }
     void FixedUpdate()
     {
+        Debug.ClearDeveloperConsole();
         cameraX = rbCamera.position.x;
-        //rbCamera.linearVelocityX = rb.linearVelocityX * cameraShakeAmplifier;
-       // rbCamera.linearVelocityY = rb.linearVelocityY * cameraShakeAmplifier;
-      //  while (rbCamera.position != rb.position)
-      //  {
-     //       cameraX = cameraX + ((cameraX - playerX) / 7);
-     //       cameraY = cameraY + ((cameraY - playerY) / 7);
-     //       rbCamera.position = new Vector2(cameraX, cameraY);
-     //   }
+        cameraY = rbCamera.position.y;
+        playerX = rb.position.x;
+        playerY = rb.position.y;
+        if (rbCamera.position != rb.position)
+        { 
+            cameraX = cameraX - ((cameraX - playerX) / cameraShakeAmplifier);
+            cameraY = cameraY - ((cameraY - playerY) / cameraShakeAmplifier);
+            rbCamera.position = new Vector2(cameraX, cameraY);
+        }
         playerOnGround = (playerCollider.IsTouching(groundCollider));
         float moveX = 0f; // i dont think this is actually nessicarry for the movement left to right but it doesnt work quite right if i do it differently so idk
 
@@ -168,6 +170,7 @@ public class Movement : MonoBehaviour
         }
         Debug.Log("playerOnGround=" + playerOnGround);
         Debug.Log("isDashing=" + isDashing);
+        
     }
 }
 
