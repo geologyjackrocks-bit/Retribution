@@ -31,6 +31,9 @@ public class Movement : MonoBehaviour
     private float cameraY;
     private float playerX;
     private float playerY;
+    private float soulBarX;
+    private float soulBarY;
+    public Rigidbody2D rbSoulBar;
 
     private void Start()
     {
@@ -109,6 +112,9 @@ public class Movement : MonoBehaviour
         Debug.ClearDeveloperConsole();
         cameraX = rbCamera.position.x;
         cameraY = rbCamera.position.y;
+        soulBarX = rb.position.x-10;
+        soulBarY = rb.position.y+8;
+        rbSoulBar.position = new Vector3(soulBarX, soulBarY, 10);
         playerX = rb.position.x;
         playerY = rb.position.y;
         if (rbCamera.position != rb.position)
