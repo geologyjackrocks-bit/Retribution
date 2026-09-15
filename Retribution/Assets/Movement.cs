@@ -31,9 +31,9 @@ public class Movement : MonoBehaviour
     private float cameraY;
     private float playerX;
     private float playerY;
-   // private float soulBarX;
-   // private float soulBarY;
-   // public Rigidbody2D rbSoulBar;
+    // private float soulBarX;
+    // private float soulBarY;
+    // public Rigidbody2D rbSoulBar;
 
     private void Start()
     {
@@ -46,7 +46,7 @@ public class Movement : MonoBehaviour
         isAnimating = true; // lets the rest of the script know that it is animating and not to start the coroutine again
         walkingAnimationFrame = 0;
         int dashingAnimationFrame = 0;
-        while (rb.linearVelocityX != 0 && rb.linearVelocityX <= 13 && facingDirection == "right") // looking for right walk
+        while (rb.linearVelocityX > 0.5 && rb.linearVelocityX <= 13 && facingDirection == "right") // looking for right walk
         {
             sr.sprite = rightWalkingAnimation[walkingAnimationFrame];
             walkingAnimationFrame++;
@@ -54,7 +54,7 @@ public class Movement : MonoBehaviour
             yield return new WaitForSeconds(0.11f);
         }
 
-        while (rb.linearVelocityX != 0 && rb.linearVelocityX >= -13 && facingDirection == "left") // looking for left walk
+        while (rb.linearVelocityX < -0.5 && rb.linearVelocityX >= -13 && facingDirection == "left") // looking for left walk
         {
             sr.sprite = leftWalkingAnimation[walkingAnimationFrame];
             walkingAnimationFrame++;
@@ -62,7 +62,7 @@ public class Movement : MonoBehaviour
             yield return new WaitForSeconds(0.11f);
         }
 
-        while (facingDirection=="right" && isDashing==true) // looking for right dash
+        while (facingDirection == "right" && isDashing == true) // looking for right dash
         {
             sr.sprite = rightDashAnimation[dashingAnimationFrame];
             dashingAnimationFrame++;
@@ -70,7 +70,7 @@ public class Movement : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
 
-        while (facingDirection=="left" && isDashing==true) // looking for left dash
+        while (facingDirection == "left" && isDashing == true) // looking for left dash
         {
             sr.sprite = leftDashAnimation[dashingAnimationFrame];
             dashingAnimationFrame++;
@@ -87,12 +87,12 @@ public class Movement : MonoBehaviour
         cameraX = rbCamera.position.x;
         cameraY = rbCamera.position.y;
         //soulBarX = rb.position.x-10;
-       // soulBarY = rb.position.y+8;
-       // rbSoulBar.position = new Vector3(soulBarX, soulBarY, 10);
+        // soulBarY = rb.position.y+8;
+        // rbSoulBar.position = new Vector3(soulBarX, soulBarY, 10);
         playerX = rb.position.x;
         playerY = rb.position.y;
         if (rbCamera.position != rb.position)
-        { 
+        {
             cameraX -= ((cameraX - playerX) / cameraShakeAmplifier);
             cameraY -= ((cameraY - playerY) / cameraShakeAmplifier);
             rbCamera.position = new Vector2(cameraX, cameraY);
@@ -113,12 +113,9 @@ public class Movement : MonoBehaviour
                 StopCoroutine(PlayerAnimation());
             }
         }
-
-        if (playerOnGround)
-        {
-            if (Keyboard.current.wKey.isPressed) rb.linearVelocityY += 5f;
-        }
-
+    
+        if (Keyboard.current.wKey.isPressed && playerOnGround) rb.linearVelocityY += 5f;
+ 
         if (Keyboard.current.aKey.isPressed)
         {
             moveX -= 1f;
@@ -133,34 +130,35 @@ public class Movement : MonoBehaviour
         if (playerOnGround && rb.linearVelocityX > 12) rb.linearVelocityX = 12;
         if (playerOnGround && rb.linearVelocityX < -12) rb.linearVelocityX = -12;
         Debug.Log("facingDirection=" + facingDirection);
-        if (moveX != 0f && !isAnimating)
+       
+        if (Keyboard.current.iKey.isPressed && !playerOnGround/*&& !soulBar == 0*/)
         {
-            StartCoroutine(PlayerAnimation());
-        }
-        if (!playerOnGround)
-        {
-            if (Keyboard.current.iKey.isPressed /*&& !soulBar==0--*/)
+            isDashing = true;
+            if (facingDirection == "left")
             {
-                isDashing = true;
-                if (facingDirection == "left")
                 {
-                    {
-                        rb.linearVelocityX = -50;
-                        rb.linearVelocityY = 0.3923998f; // this number is required to be exactly that to keep the linearVelocityY exactly 0, it wont say 0 idk why it does that but it is actually 0
+                    rb.linearVelocityX = -50;
+                    rb.linearVelocityY = 0.3923998f; // this number is required to be exactly that to keep the linearVelocityY exactly 0, it wont say 0 idk why it does that but it is actually 0
 
-                    }
                 }
-                if (facingDirection == "right")
+            }
+            if (facingDirection == "right")
+            {
                 {
                     {
                         rb.linearVelocityX = 50;
-                        rb.linearVelocityY = 0.3923998f; // note on line 159 applies here as well
+                        rb.linearVelocityY = 0.3923998f; // note on line 144 applies here as well
                     }
                 }
             }
+            Debug.Log("playerOnGround=" + playerOnGround);
+            Debug.Log("isDashing=" + isDashing);
         }
-        Debug.Log("playerOnGround=" + playerOnGround);
-        Debug.Log("isDashing=" + isDashing);
+        if ((rb.linearVelocityX !> -0.5f && rb.linearVelocityX !< 0.5f) || rb.linearVelocityY != 0f && !isAnimating)
+        {
+            StartCoroutine(PlayerAnimation());
+        }
+
     }
 }
 
