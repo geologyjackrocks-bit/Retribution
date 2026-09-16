@@ -25,6 +25,7 @@ public class Movement : MonoBehaviour
     private bool isDashing = false;
     private bool playerOnGround;
     private int walkingAnimationFrame;
+    private int dashingAnimationFrame;
     public Rigidbody2D rbCamera;
     public float cameraShakeAmplifier;
     private float cameraX;
@@ -40,12 +41,12 @@ public class Movement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         rb.freezeRotation = true;
         sr = GetComponent<SpriteRenderer>();
+        StartCoroutine(PlayerAnimation());
     }
     IEnumerator PlayerAnimation()
     {
-        isAnimating = true; // lets the rest of the script know that it is animating and not to start the coroutine again
         walkingAnimationFrame = 0;
-        int dashingAnimationFrame = 0;
+        dashingAnimationFrame = 0;
         while (rb.linearVelocityX > 0.5 && rb.linearVelocityX <= 13 && facingDirection == "right") // looking for right walk
         {
             sr.sprite = rightWalkingAnimation[walkingAnimationFrame];
@@ -77,29 +78,6 @@ public class Movement : MonoBehaviour
             if (dashingAnimationFrame > 1) dashingAnimationFrame = 0;
             yield return new WaitForSeconds(0.1f);
         }
-
-        isAnimating = false; // lets the rest of the script know that it is no longer animating and can start the coroutine again
-    }
-    void FixedUpdate()
-    {
-        Debug.ClearDeveloperConsole();
-        isDashing = false;
-        cameraX = rbCamera.position.x;
-        cameraY = rbCamera.position.y;
-        //soulBarX = rb.position.x-10;
-        // soulBarY = rb.position.y+8;
-        // rbSoulBar.position = new Vector3(soulBarX, soulBarY, 10);
-        playerX = rb.position.x;
-        playerY = rb.position.y;
-        if (rbCamera.position != rb.position)
-        {
-            cameraX -= ((cameraX - playerX) / cameraShakeAmplifier);
-            cameraY -= ((cameraY - playerY) / cameraShakeAmplifier);
-            rbCamera.position = new Vector2(cameraX, cameraY);
-        }
-        playerOnGround = (playerCollider.IsTouching(groundCollider));
-        float moveX = 0f; // i dont think this is actually nessicarry for the movement left to right but it doesnt work quite right if i do it differently so idk
-
         if ((rb.linearVelocityX > -0.5 && rb.linearVelocityX < 0.5) || playerOnGround)
         {
             if (facingDirection == "right")
@@ -113,7 +91,30 @@ public class Movement : MonoBehaviour
                 StopCoroutine(PlayerAnimation());
             }
         }
-    
+    }
+    void FixedUpdate()
+    {
+        Debug.ClearDeveloperConsole();
+        isDashing = false;
+        cameraX = rbCamera.position.x;
+        cameraY = rbCamera.position.y;
+        /*
+        soulBarX = rb.position.x-10;
+        soulBarY = rb.position.y+8;
+        rbSoulBar.position = new Vector3(soulBarX, soulBarY, 10);
+        */
+        playerX = rb.position.x;
+        playerY = rb.position.y;
+        
+        if (rbCamera.position != rb.position)
+        {
+            cameraX -= ((cameraX - playerX) / cameraShakeAmplifier);
+            cameraY -= ((cameraY - playerY) / cameraShakeAmplifier);
+            rbCamera.position = new Vector2(cameraX, cameraY);
+        }
+        playerOnGround = (playerCollider.IsTouching(groundCollider));
+        float moveX = 0f; // i dont think this is actually nessicarry for the movement left to right but it doesnt work quite right if i do it differently so idk
+
         if (Keyboard.current.wKey.isPressed && playerOnGround) rb.linearVelocityY += 5f;
  
         if (Keyboard.current.aKey.isPressed)
@@ -154,7 +155,7 @@ public class Movement : MonoBehaviour
             Debug.Log("playerOnGround=" + playerOnGround);
             Debug.Log("isDashing=" + isDashing);
         }
-        if ((rb.linearVelocityX !> -0.5f && rb.linearVelocityX !< 0.5f) || rb.linearVelocityY != 0f && !isAnimating)
+        if (!(rb.linearVelocityX !> -0.5f && rb.linearVelocityX !< 0.5f) || rb.linearVelocityY != 0f && !isAnimating)
         {
             StartCoroutine(PlayerAnimation());
         }
