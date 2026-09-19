@@ -32,6 +32,7 @@ public class Movement : MonoBehaviour
     private float cameraY;
     private float playerX;
     private float playerY;
+    public int soulBar;
     // private float soulBarX;
     // private float soulBarY;
     // public Rigidbody2D rbSoulBar;
@@ -42,6 +43,23 @@ public class Movement : MonoBehaviour
         rb.freezeRotation = true;
         sr = GetComponent<SpriteRenderer>();
         StartCoroutine(PlayerAnimation());
+        StartCoroutine(SoulBarUpdater());
+    }
+    IEnumerator SoulBarUpdater()
+    {
+        while (isDashing)
+        {
+            soulBar -= 1;
+            yield return new WaitForSeconds(0.1f);
+        }
+        if (soulBar == 0)
+        {
+            while (soulBar != 100) 
+            {
+                soulBar += 1;
+                yield return new WaitForSeconds(0.2f);
+            }
+        }
     }
     IEnumerator PlayerAnimation()
     {
@@ -132,7 +150,7 @@ public class Movement : MonoBehaviour
         if (playerOnGround && rb.linearVelocityX < -12) rb.linearVelocityX = -12;
         Debug.Log("facingDirection=" + facingDirection);
        
-        if (Keyboard.current.iKey.isPressed && !playerOnGround/*&& !soulBar == 0*/)
+        if (Keyboard.current.iKey.isPressed && !playerOnGround && soulBar != 0)
         {
             isDashing = true;
             if (facingDirection == "left")
