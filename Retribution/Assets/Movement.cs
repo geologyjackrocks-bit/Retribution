@@ -52,14 +52,13 @@ public class Movement : MonoBehaviour
             soulBar -= 1;
             yield return new WaitForSeconds(0.1f);
         }
-        if (soulBar == 0)
+
+        while (soulBar != 100 && !isDashing)
         {
-            while (soulBar != 100) 
-            {
-                soulBar += 1;
-                yield return new WaitForSeconds(0.2f);
-            }
+            soulBar += 1;
+            yield return new WaitForSeconds(0.2f);
         }
+        
     }
     IEnumerator PlayerAnimation()
     {
@@ -87,6 +86,7 @@ public class Movement : MonoBehaviour
             dashingAnimationFrame++;
             if (dashingAnimationFrame > 1) dashingAnimationFrame = 0;
             yield return new WaitForSeconds(0.1f);
+            Debug.Log("right wlak");
         }
 
         while (facingDirection == "left" && isDashing == true) // looking for left dash
@@ -96,17 +96,15 @@ public class Movement : MonoBehaviour
             if (dashingAnimationFrame > 1) dashingAnimationFrame = 0;
             yield return new WaitForSeconds(0.1f);
         }
-        if ((rb.linearVelocityX > -0.5 && rb.linearVelocityX < 0.5) || playerOnGround)
+        while ((rb.linearVelocityX > -0.5 && rb.linearVelocityX < 0.5) || playerOnGround)
         {
             if (facingDirection == "right")
             {
                 sr.sprite = rightWalkingAnimation[walkingAnimationFrame];
-                StopCoroutine(PlayerAnimation());
             }
             if (facingDirection == "left")
             {
                 sr.sprite = leftWalkingAnimation[walkingAnimationFrame];
-                StopCoroutine(PlayerAnimation());
             }
         }
     }
@@ -123,7 +121,7 @@ public class Movement : MonoBehaviour
         */
         playerX = rb.position.x;
         playerY = rb.position.y;
-        
+
         if (rbCamera.position != rb.position)
         {
             cameraX -= ((cameraX - playerX) / cameraShakeAmplifier);
@@ -134,7 +132,7 @@ public class Movement : MonoBehaviour
         float moveX = 0f; // i dont think this is actually nessicarry for the movement left to right but it doesnt work quite right if i do it differently so idk
 
         if (Keyboard.current.wKey.isPressed && playerOnGround) rb.linearVelocityY += 5f;
- 
+
         if (Keyboard.current.aKey.isPressed)
         {
             moveX -= 1f;
@@ -149,7 +147,7 @@ public class Movement : MonoBehaviour
         if (playerOnGround && rb.linearVelocityX > 12) rb.linearVelocityX = 12;
         if (playerOnGround && rb.linearVelocityX < -12) rb.linearVelocityX = -12;
         Debug.Log("facingDirection=" + facingDirection);
-       
+
         if (Keyboard.current.iKey.isPressed && !playerOnGround && soulBar != 0)
         {
             isDashing = true;
@@ -173,11 +171,6 @@ public class Movement : MonoBehaviour
             Debug.Log("playerOnGround=" + playerOnGround);
             Debug.Log("isDashing=" + isDashing);
         }
-        if (!(rb.linearVelocityX !> -0.5f && rb.linearVelocityX !< 0.5f) || rb.linearVelocityY != 0f && !isAnimating)
-        {
-            StartCoroutine(PlayerAnimation());
-        }
-
     }
 }
 
