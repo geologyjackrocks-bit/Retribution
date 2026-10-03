@@ -25,7 +25,6 @@ public class Movement : MonoBehaviour
     private bool isDashing = false;
     private bool playerOnGround;
     private int walkingAnimationFrame;
-    private int dashingAnimationFrame;
     public Rigidbody2D rbCamera;
     public float cameraShakeAmplifier;
     private float cameraX;
@@ -62,8 +61,9 @@ public class Movement : MonoBehaviour
     }
     IEnumerator PlayerAnimation()
     {
+        isAnimating = true; // lets the rest of the script know that it is animating and not to start the coroutine again
         walkingAnimationFrame = 0;
-        dashingAnimationFrame = 0;
+        int dashingAnimationFrame = 0;
         while (rb.linearVelocityX > 0.5 && rb.linearVelocityX <= 13 && facingDirection == "right") // looking for right walk
         {
             sr.sprite = rightWalkingAnimation[walkingAnimationFrame];
@@ -96,18 +96,12 @@ public class Movement : MonoBehaviour
             if (dashingAnimationFrame > 1) dashingAnimationFrame = 0;
             yield return new WaitForSeconds(0.1f);
         }
+
         while ((rb.linearVelocityX > -0.5 && rb.linearVelocityX < 0.5) || playerOnGround)
-        {
-            if (facingDirection == "right")
-            {
-                sr.sprite = rightWalkingAnimation[walkingAnimationFrame];
-            }
-            if (facingDirection == "left")
-            {
-                sr.sprite = leftWalkingAnimation[walkingAnimationFrame];
-            }
-        }
+        { }
+
     }
+ 
     void FixedUpdate()
     {
         Debug.ClearDeveloperConsole();
@@ -130,7 +124,6 @@ public class Movement : MonoBehaviour
         }
         playerOnGround = (playerCollider.IsTouching(groundCollider));
         float moveX = 0f; // i dont think this is actually nessicarry for the movement left to right but it doesnt work quite right if i do it differently so idk
-
         if (Keyboard.current.wKey.isPressed && playerOnGround) rb.linearVelocityY += 5f;
 
         if (Keyboard.current.aKey.isPressed)
